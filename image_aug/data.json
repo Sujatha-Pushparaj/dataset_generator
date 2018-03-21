@@ -1,0 +1,44 @@
+{
+	"no_of_agu" : 3 ,
+
+	"flip_left_right" : { "probability" : 0.5 , "enable" : true },
+
+	"flip_random" : { "probability" : 0.5 , "enable" : true }, 
+
+	"flip_top_bottom" : { "probability" : 0.5 , "enable" : true }, 
+
+	"gaussian_distortion" : { "probability" : 0.5 , "grid_width" : 5 , "grid_height" : 5 ,
+	"magnitude" : 10 , "enable" : true },
+	
+	"random_distortion": { "probability" : 0.5 , "grid_width" : 5 , "grid_height" : 5 , 		"magnitude" : 10 , "enable" : true },
+
+	"random_erasing" : {"probability" : 0.5 , "rectangle_area" : 0.15 , "enable" : true },
+
+	"rotate_without_crop" : { "probability" : 0.5 , "max_left_rotation" : 15 , 
+	"max_right_rotation" : 15 , "enable" : true },
+	
+	"shear" : { "probability" : 0.5 , "max_shear_left" : 25 , "max_shear_right" : 25 , 
+	"enable" : true },
+
+	"skew" : { "probability" : 0.5 , "magnitude" : 0.5 , "enable" : true }, 
+
+	"skew_corner" : { "probability" : 0.5 , "magnitude" : 0.5 , "enable" : true },
+
+	"skew_left_right" : { "probability" : 0.5 , "magnitude" : 0.5 , "enable" : true },
+
+	"skew_tilt" : { "probability" : 0.5 , "magnitude" : 0.5 , "enable" : true },
+
+	"skew_top_bottom" : { "probability" : 0.5 , "magnitude" : 0.5 , "enable" : true },
+
+	"zoom" : { "probability" : 0.5 , "min_factor" : 1.1 , "max_factor" : 1.2 , "enable" : true },
+
+	"zoom_random" : { "probability" : 0.5 , "percentage_area" : 0.9 , "enable" : false }, 
+
+	"vignetting" : { "probability" : 0.5 , "px" : 0.25 , "py" : 0.25 , "enable" : false },
+
+	"salt_and_pepper_noise" : { "probability" : 0.5 , "magnitude" : 0.004 , "enable" : true },
+
+	"color_shift" : { "probability" : 0.5 , "color_shift_range" : 50 , "enable" : true }
+
+}
+
