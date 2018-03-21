@@ -11,9 +11,10 @@ from cv2.xfeatures2d import SIFT_create
 import numpy as np
 from sklearn import cluster
 from sklearn.svm import SVC
+from sklearn.metrics import precision_score, recall_score
 
 config_path = './models/dsgconfig.ini'
-class_labels = {'positive': 0, 'negative': 1}
+class_labels = {'positive': 1, 'negative': 0}
 
 
 class DSG(object):
@@ -161,7 +162,7 @@ class DSG(object):
         self.__build_test_featureset(self.random_testing_images_path,
                                      class_labels['negative'])
         result = self.__format_result(self.classifier.
-                                      predict_proba(self.test_set)[:, 0])
+                                      predict_proba(self.test_set)[:, 1])
         self.predictiontime = timeit.default_timer() - self.predictiontime
         if report:
             self.__generate_report(result)
@@ -187,12 +188,12 @@ class DSG(object):
         model['classfier'] = self.classifier
         model['centroids'] = self.centroids
         model['cluster_labels'] = self.cluster_labels
-        file_name = 'acmodel_' + str(self.number_of_clusters) + '_' + str(self.contrast_threshold) + '.file'
+        file_name = 'carmodel_' + str(self.number_of_clusters) + '_' + str(self.contrast_threshold) + '.file'
         with open(self.model_path + '/' + file_name, 'wb') as f:
             pickle.dump(model, f)
 
     def __load_model(self):
-        file_name = 'acmodel_' + str(self.number_of_clusters) + '_' + str(self.contrast_threshold) + '.file'
+        file_name = 'carmodel_' + str(self.number_of_clusters) + '_' + str(self.contrast_threshold) + '.file'
         with open(self.model_path + '/' + file_name, 'rb') as f:
             model = pickle.load(f)
         #self.sift = cv2.xfeatures2d.SIFT_create(contrastThreshold=0.1)
@@ -206,7 +207,7 @@ class DSG(object):
             if(rst[2] >= threshold or rst[2] <= (1 - threshold)):
                 if(a == b):
                     hp += 1
-                    x +=1
+                    x += 1
                 else:
                     hn += 1
             else:
@@ -224,10 +225,11 @@ class DSG(object):
                 wr.writerow(['PositiveTraining', 'NegativeTraining',
                             'Clustercount', 'contrastThreshold', 'Threshold',
                              'Accuracy', 'HP', 'LP', 'HN', 'LN',
-                             'TrainingTime', 'PredictionTime'])
+                             'TrainingTime', 'PredictionTime',
+                             'Precision', 'Recall'])
             x = []
             for i in result:
-                x.append(i[2] < 0.5)
+                x.append(i[2] > 0.5)
             x = list(map(int, x))
             for threshold in [0.6, 0.7, 0.8]:
                 random_training = sum(self.trainimage_label)
@@ -237,6 +239,8 @@ class DSG(object):
                 row.extend(self.__score(x, threshold, result))
                 row.append(self.trainingtime)
                 row.append(self.predictiontime)
+                row.append(precision_score(self.testimage_label, x))
+                row.append(recall_score(self.testimage_label, x))
                 wr.writerow(row)
 
 
