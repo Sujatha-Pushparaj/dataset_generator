@@ -1,0 +1,886 @@
+{
+    "params": {
+        "flip_left_right": {
+            "probability": {
+                "name": "probability_flip_left_right",
+                "desc": "probability for execuiting the flip_left_right",
+                "value": [ 
+                         0.2
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_flip_left_right",
+                "desc": "weather to execuite the flip_left_right",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "flip_random": {
+            "probability": {
+                "name": "probability_flip_random",
+                "desc": "probability for execuiting the flip_random",
+                "value": [ 
+                         0.2
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_flip_random",
+                "desc": "weather to execuite the flip_random",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "flip_top_bottom": {
+            "probability": {
+                "name": "probability_flip_top_bottom",
+                "desc": "probability for execuiting the flip_top_bottom",
+                "value": [ 
+                         0.2
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_flip_top_bottom",
+                "desc": "weather to execuite the flip_random",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "gaussian_distortion": {
+            "probability": {
+                "name": "probability_gaussian_distortion",
+                "desc": "probability for execuiting the gaussian_distortion",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "grid_width": {
+                "name": "grid_width_gaussian_distortion",
+                "desc": "number of grids in the width",
+                "value": [ 
+                         5
+                 ],
+                "data_type": "number",
+                "range": [
+                         1,
+                         12
+                 ],
+                "step": [
+                        1
+                 ]
+             },
+            "grid_height": {
+                "name": "grid_height_gaussian_distortion",
+                "desc": "number of grids in the height",
+                "value": [ 
+                         5
+                 ],
+                "data_type": "number",
+                "range": [
+                         1,
+                         12
+                 ],
+                "step": [
+                        1
+                 ]
+             },
+            "magnitude": {
+                "name": "magnitude_gaussian_distortion",
+                "desc": "magnitude of disortion",
+                "value": [ 
+                         10
+                 ],
+                "data_type": "number",
+                "range": [
+                         1,
+                         12
+                 ],
+                "step": [
+                        1
+                 ]
+             },
+            "enable": {
+                "name": "enable_gaussian_distortion",
+                "desc": "weather to execuite the gaussian_distortion",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "random_distortion": {
+            "probability": {
+                "name": "probability_random_distortion",
+                "desc": "probability for execuiting the random_distortion",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "grid_width": {
+                "name": "grid_width_random_distortion",
+                "desc": "number of grids in the width",
+                "value": [ 
+                         5
+                 ],
+                "data_type": "number",
+                "range": [
+                         1,
+                         12
+                 ],
+                "step": [
+                        1
+                 ]
+             },
+            "grid_height": {
+                "name": "grid_height_random_distortion",
+                "desc": "number of grids in the height",
+                "value": [ 
+                         5
+                 ],
+                "data_type": "number",
+                "range": [
+                         1,
+                         12
+                 ],
+                "step": [
+                        1
+                 ]
+             },
+            "magnitude": {
+                "name": "magnitude_random_distortion",
+                "desc": "magnitude of disortion",
+                "value": [ 
+                         10
+                 ],
+                "data_type": "number",
+                "range": [
+                         1,
+                         12
+                 ],
+                "step": [
+                        1
+                 ]
+             },
+            "enable": {
+                "name": "enable_random_distortion",
+                "desc": "weather to execuite the random_distortion",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "random_erasing": {
+            "probability": {
+                "name": "probability_random_erasing",
+                "desc": "probability for execuiting the random_erasing",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "rectangle_area": {
+                "name": "rectangle_area_random_erasing",
+                "desc": "area to be randomly erased",
+                "value": [ 
+                         0.15
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.11,
+                         0.5
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_random_erasing",
+                "desc": "weather to execuite the random_erasing",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "rotate_without_crop": {
+            "probability": {
+                "name": "probability_rotate_without_crop",
+                "desc": "probability for execuiting the rotate_without_crop",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "max_left_rotation": {
+                "name": "max_left_rotation_rotate_without_crop",
+                "desc": "maximum angle that can be rotated in left",
+                "value": [ 
+                         25
+                 ],
+                "data_type": "number",
+                "range": [
+                         0,
+                         90
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "max_right_rotation": {
+                "name": "max_right_rotation_rotate_without_crop",
+                "desc": "maximum angle that can be rotated in right",
+                "value": [ 
+                         25
+                 ],
+                "data_type": "number",
+                "range": [
+                         0,
+                         90
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_rotate_without_crop",
+                "desc": "weather to execuite the rotate_without_crop",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "shear": {
+            "probability": {
+                "name": "probability_shear",
+                "desc": "probability for execuiting the shear",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "max_shear_left": {
+                "name": "max_shear_left",
+                "desc": "maximum angle that can be shear in left",
+                "value": [ 
+                         15
+                 ],
+                "data_type": "number",
+                "range": [
+                         0,
+                         25
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "max_shear_right": {
+                "name": "max_shear_right",
+                "desc": "maximum angle that can be shear in right",
+                "value": [ 
+                         15
+                 ],
+                "data_type": "number",
+                "range": [
+                         0,
+                         25
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_shear",
+                "desc": "weather to execuite the shear",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "skew": {
+            "probability": {
+                "name": "probability_skew",
+                "desc": "probability for execuiting the skew",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "magnitude": {
+                "name": "magnitude_skew",
+                "desc": "magnitude to be skewed",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.01,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_skew",
+                "desc": "weather to execuite the skew",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "skew_corner": {
+            "probability": {
+                "name": "probability_skew_corner",
+                "desc": "probability for execuiting the skew_corner",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "magnitude": {
+                "name": "magnitude_skew_corner",
+                "desc": "magnitude to be skewed in corner",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.01,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_skew_corner",
+                "desc": "weather to execuite the skew_corner",
+                "value": [ 
+                         false
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "skew_left_right": {
+            "probability": {
+                "name": "probability_skew_left_right",
+                "desc": "probability for execuiting the skew_left_right",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "magnitude": {
+                "name": "magnitude_skew_left_right",
+                "desc": "magnitude to be skewed in left or right",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.01,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_skew_left_right",
+                "desc": "weather to execuite the skew_left_right",
+                "value": [ 
+                         false
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "skew_tilt": {
+            "probability": {
+                "name": "probability_skew_tilt",
+                "desc": "probability for execuiting the skew_tilt",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "magnitude": {
+                "name": "magnitude_skew_tilt",
+                "desc": "magnitude to be skewed as tilted",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.01,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_skew_tilt",
+                "desc": "weather to execuite the skew_tilt",
+                "value": [ 
+                         false
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "skew_top_bottom": {
+            "probability": {
+                "name": "probability_skew_top_bottom",
+                "desc": "probability for execuiting the skew_top_bottom",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "magnitude": {
+                "name": "magnitude_skew_top_bottom",
+                "desc": "magnitude to be skewed in top or bottom",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.01,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_skew_top_bottom",
+                "desc": "weather to execuite the skew_top_bottom",
+                "value": [ 
+                         false
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "zoom": {
+            "probability": {
+                "name": "probability_zoom",
+                "desc": "probability for execuiting the zoom",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "min_factor": {
+                "name": "min_factor_zoom",
+                "desc": "minimum percentage that can be zoomed",
+                "value": [ 
+                         1.01
+                 ],
+                "data_type": "number",
+                "range": [
+                         0,
+                         2
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "max_factor": {
+                "name": "max_factor_zoom",
+                "desc": "maximum percentage that can be zoomed",
+                "value": [ 
+                         1.3
+                 ],
+                "data_type": "number",
+                "range": [
+                         0,
+                         2
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_zoom",
+                "desc": "weather to execuite the zoom",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "zoom_random": {
+            "probability": {
+                "name": "probability_zoom_random",
+                "desc": "probability for execuiting the zoom_random",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "percentage_area": {
+                "name": "zoom_random_percentage_area",
+                "desc": "area to be randomly zoomed",
+                "value": [ 
+                         0.9
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.7,
+                         0.99
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_zoom_random",
+                "desc": "weather to execuite the zoom_random",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "vignetting": {
+            "probability": {
+                "name": "probability_vignetting",
+                "desc": "probability for execuiting the vignetting",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "px": {
+                "name": "x_scale_vignetting",
+                "desc": "x scale percentage that can be vignetting",
+                "value": [ 
+                         0.35
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.25,
+                         0.7
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "py": {
+                "name": "y_scale_vignetting",
+                "desc": "y scale percentage that can be vignetting",
+                "value": [ 
+                         0.25
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.25,
+                         0.7
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "enable": {
+                "name": "enable_vignetting",
+                "desc": "weather to execuite the vignetting",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "salt_and_pepper_noise": {
+            "probability": {
+                "name": "probability_salt_and_pepper_noise",
+                "desc": "probability for execuiting the salt_and_pepper_noise",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "magnitude": {
+                "name": "magnitude_salt_and_pepper_noise",
+                "desc": "magnitude of salt_and_pepper_noise",
+                "value": [ 
+                         0.004
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.001,
+                         0.01
+                 ],
+                "step": [
+                        0.0001
+                 ]
+             },
+            "enable": {
+                "name": "enable_salt_and_pepper_noise",
+                "desc": "weather to execuite the salt_and_pepper_noise",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         },
+        "color_shift": {
+            "probability": {
+                "name": "probability_color_shift",
+                "desc": "probability for execuiting the color_shift",
+                "value": [ 
+                         0.5
+                 ],
+                "data_type": "number",
+                "range": [
+                         0.1,
+                         1
+                 ],
+                "step": [
+                        0.01
+                 ]
+             },
+            "magnitude": {
+                "name": "magnitude_color_shift",
+                "desc": "magnitude of color_shift",
+                "value": [ 
+                         50
+                 ],
+                "data_type": "number",
+                "range": [
+                         1,
+                         255
+                 ],
+                "step": [
+                        1
+                 ]
+             },
+            "enable": {
+                "name": "enable_color_shift",
+                "desc": "weather to execuite the color_shift",
+                "value": [ 
+                         true
+                 ],
+                "data_type": "enum",
+                "range": [
+                         true,
+                         false
+                 ]
+             }
+         }
+     },
+    "general": {
+        "no_of_agu": {
+            "value": [
+                     5
+             ],
+            "range": [
+                     1,
+                     18
+             ],
+            "data_type": "number",
+            "step": [
+                    1
+             ]
+         }
+     }
+}
