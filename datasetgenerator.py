@@ -52,18 +52,21 @@ class DSG(object):
 
     def __build_train_featureset(self, path, trainimage_label):
         print("loading trainingset", path)
-        for image in os.listdir(path):
-            complete_path = path + '/' + image
-            des = self.__get_features_sift(complete_path)
-            if des is None:
-                continue
-            self.features_len.append(len(des))
-            self.trainimage_label.append(trainimage_label)
-            if(self.all_features.shape == (1, 0)):
-                self.all_features = np.array(des)
-            else:
-                self.all_features = np.concatenate((self.all_features, des),
-                                                   axis=0)
+        for tag in os.listdir(path):
+            tag_path = os.path.join(path, tag)
+            for image in os.listdir(tag_path):
+                complete_path = os.path.join(tag_path, image)
+                des = self.__get_features_sift(complete_path)
+                print ('Complete Path========>', complete_path)
+                if des is None:
+                    continue
+                self.features_len.append(len(des))
+                self.trainimage_label.append(trainimage_label)
+                if(self.all_features.shape == (1, 0)):
+                    self.all_features = np.array(des)
+                else:
+                    self.all_features = np.concatenate((self.all_features,
+                                                        des), axis=0)
 
     def __cleartraining(self):
         self.all_features = np.array([[]])
@@ -71,11 +74,14 @@ class DSG(object):
         self.trainimage_label = []
 
     def __get_features_sift(self, path):
-        img = cv2.imread(path, 1)
-        re_img = cv2.resize(img, (self.resize_height, self.resize_width))
-        gray = cv2.cvtColor(re_img, cv2.COLOR_BGR2GRAY)
-        kp, des = self.sift.detectAndCompute(gray, None)
-        return des
+        try:
+            img = cv2.imread(path, 1)
+            re_img = cv2.resize(img, (self.resize_height, self.resize_width))
+            gray = cv2.cvtColor(re_img, cv2.COLOR_BGR2GRAY)
+            kp, des = self.sift.detectAndCompute(gray, None)
+            return des
+        except Exception:
+            return None
 
     def __get_features_orb(self, path):
         img = cv2.imread(path, 1)
@@ -132,25 +138,26 @@ class DSG(object):
 
     def __build_test_featureset(self, path, flag=-1):
         print("loading testset")
-        for image in os.listdir(path):
-            complete_path = path + '/' + image
-            print('path========>%s'%complete_path)
-            des = self.__get_features_sift(complete_path)
-            if des is None:
-                continue
-            self.testimage_list.append(image)
-            self.testimage_label.append(flag)
-            test_set = np.zeros((1, max(self.cluster_labels) + 1))
-            for feature in des:
-                dis = abs(self.centroids - feature)
-                dis_sum = [sum(i) for i in dis]
-                bst_label = dis_sum.index(min(dis_sum))
-                test_set[0][bst_label] += 1
-            if(self.test_set.shape == (1, 0)):
-                self.test_set = np.array(test_set)
-            else:
-                self.test_set = np.concatenate((self.test_set, test_set),
-                                               axis=0)
+        for tag in os.listdir(path):
+            tag_path = os.path.join(path, tag)
+            for image in os.listdir(tag_path):
+                complete_path = os.path.join(tag_path, image)
+                des = self.__get_features_sift(complete_path)
+                if des is None:
+                    continue
+                self.testimage_list.append(complete_path)
+                self.testimage_label.append(flag)
+                test_set = np.zeros((1, max(self.cluster_labels) + 1))
+                for feature in des:
+                    dis = abs(self.centroids - feature)
+                    dis_sum = [sum(i) for i in dis]
+                    bst_label = dis_sum.index(min(dis_sum))
+                    test_set[0][bst_label] += 1
+                if(self.test_set.shape == (1, 0)):
+                    self.test_set = np.array(test_set)
+                else:
+                    self.test_set = np.concatenate((self.test_set, test_set),
+                                                   axis=0)
 
     def predict(self, report=False):
         global class_labels
@@ -159,13 +166,14 @@ class DSG(object):
         self.__cleartesting()
         self.__build_test_featureset(self.positive_testing_images_path,
                                      class_labels['positive'])
-        self.__build_test_featureset(self.random_testing_images_path,
-                                     class_labels['negative'])
+        #self.__build_test_featureset(self.random_testing_images_path,
+        #                             class_labels['negative'])
         result = self.__format_result(self.classifier.
                                       predict_proba(self.test_set)[:, 1])
         self.predictiontime = timeit.default_timer() - self.predictiontime
         if report:
             self.__generate_report(result)
+        self.__show_images(result)
         return result
 
     def __format_result(self, class_prob):
@@ -182,6 +190,15 @@ class DSG(object):
                          class_prob)]
         print(self.classifier.classes_)
         return result
+
+    def __show_images(self, result):
+        for image in result:
+            print(image)
+            temp = cv2.imread(image[0], 1)
+            temp = cv2.resize(temp, (100, 100))
+            cv2.imshow(str(image[2]), temp)
+            cv2.waitKey()
+            cv2.destroyAllWindows()
 
     def __store_model(self):
         model = {}
