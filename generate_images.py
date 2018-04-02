@@ -65,8 +65,8 @@ def fetch_links(driver, searchtext="car", start=0, count_argv=10, download_path=
   Output : list of dictonaries so that it contains all the information of the image
   '''
   num_requested = int(count_argv) + int(start)
-  #to decide the number of scrolls to be done
-  number_of_scrolls = num_requested / 400 + 1
+  #to decide the number of scrolls to be done. 1 scroll loads 20 images
+  number_of_scrolls = num_requested / 20 
   #for the purpose of url building and for naming the directory
   if not tags:
     tag = ""
@@ -80,13 +80,13 @@ def fetch_links(driver, searchtext="car", start=0, count_argv=10, download_path=
   driver.get(url)
   #scrolling to the required level so that to extract the links of the images to be downloaded
   for _ in range(int(number_of_scrolls)):
-    #each iteration scrolls for around 400 images
-    for _ in range(10):
-      driver.execute_script("window.scrollBy(0, 1000000)")
+    #each iteration scrolls for around 20 images
+    for _ in range(1):
+      driver.execute_script("window.scrollBy(0, 1000)")
       #time delay for each scroll
-      time.sleep(0.2)
-    #time to load all 400 images
-    time.sleep(0.5)
+      #time.sleep(0.1)
+    #time to load all 20 images
+    #time.sleep(0.1)
     #try to search wheather there is any show more results button if so click
     try:
       driver.find_element_by_xpath("//input[@value='Show more results']").click()
@@ -153,10 +153,12 @@ def download_img(driver, searchtext="car", start=0, count_argv=10, download_path
 
 
 def mul_tags(driver,searchtext, download_path="./download", all_tags=[None], tag_list=[0], start_list=[0], count_list=[100]):
+  image_links = {}
   for i, tag_no in enumerate(tag_list):
     images = fetch_links(driver, searchtext=searchtext, start=start_list[i], count_argv=count_list[i], download_path=download_path, tags = all_tags[tag_no])
     download_img(driver, searchtext=searchtext, start=start_list[i], count_argv=count_list[i], download_path=download_path, tags = all_tags[tag_no],images = images)
-
+    image_links[all_tags[tag_no]] = images
+  return image_links
 
 def generate_image(searchtext, tagscount, download_path):
   '''
