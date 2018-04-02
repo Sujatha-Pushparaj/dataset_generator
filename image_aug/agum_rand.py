@@ -364,7 +364,7 @@ def test_mul_image_agu(dir_path, batch_size=100):
   '''
   test function for multiple image agumentation
   '''
-  json_file_path = "/home/soliton/work/projects/dataset_generator/image_aug/config_augm.json"
+  json_file_path = "./image_aug/config_augm.json"
   # dir_path = "./images"
   path_images = [os.path.join(dir_path, f) for f in os.listdir(dir_path)
                  if os.path.isfile(os.path.join(dir_path, f))]
