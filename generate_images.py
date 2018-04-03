@@ -58,7 +58,7 @@ def close_browser(driver):
   driver.quit()
 
 
-def fetch_links(driver, searchtext="car", start=0, count_argv=10, download_path="./download", tags = None):
+def fetch_links(driver, searchtext="car", start=0, count_argv=10, tags = None, extensions=[]):
   '''
   Process : to get links for number of images to be downloaded 
   Input : the browser address, search phrase, count to be downloaded, download path, tag of the image to be download
@@ -66,7 +66,7 @@ def fetch_links(driver, searchtext="car", start=0, count_argv=10, download_path=
   '''
   num_requested = int(count_argv) + int(start)
   #to decide the number of scrolls to be done. 1 scroll loads 20 images
-  number_of_scrolls = num_requested / 20 
+  number_of_scrolls = num_requested / 20 + 1
   #for the purpose of url building and for naming the directory
   if not tags:
     tag = ""
@@ -95,12 +95,21 @@ def fetch_links(driver, searchtext="car", start=0, count_argv=10, download_path=
       break
   #finding all the details of the image that is to be download
   images = driver.find_elements_by_xpath('//div[contains(@class,"rg_meta")]')
-  print ("Total images:", len(images[start:]), "\n")
-  return images[start:]
+  valid_images = []
+  for i in images:
+    img_type = json.loads(i.get_attribute('innerHTML'))["ity"]
+    if(img_type in extensions):
+      # appends the url of the image
+      valid_images.append(json.loads(i.get_attribute('innerHTML'))["ou"])
+  valid_images = valid_images[start:start+count_argv]
+  print ("Total images:", len(valid_images), "\n")
+  return valid_images
 
 
-def download_img(driver, searchtext="car", start=0, count_argv=10, download_path="./download", tags = None,images = []):
+def download_img1(driver, searchtext="car", start=0, count_argv=10, download_path="./download", tags = None,images = []):
   #for the purpose of url building and for naming the directory
+  fail_count = 0
+  timeout_count = 0
   if not tags:
     tag = ""
     tags = ""
@@ -112,6 +121,7 @@ def download_img(driver, searchtext="car", start=0, count_argv=10, download_path
   headers = {}
   headers['User-Agent'] = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
   #images that are downloaded will be stored here for further details
+  img_urls = []
   dict_img = {}
   if not tag:
     searchtext = "_".join(searchtext.split(" "))
@@ -139,9 +149,14 @@ def download_img(driver, searchtext="car", start=0, count_argv=10, download_path
         f.write(raw_img)
         f.close
         dict_img["%s"%count] = {"ou":img_url, "ity":img_type}
+        img_urls.append(img_url)
         count = count + 1
     except Exception as e:
       print ("Download failed:", e)
+      fail_count += 1
+      if(type(e)=='socket.timeout'):
+        print('************')
+        timeout_count += 1
       os.remove(download_path+"/"+searchtext.replace(" ", "_")+"/"+searchtext.replace(" ", "_")+str(count + start)+"."+img_type)
       #count = count - 1
     if count_argv < count :
@@ -149,16 +164,78 @@ def download_img(driver, searchtext="car", start=0, count_argv=10, download_path
   if count_argv > count:
     #checking weather the images count specified is satisfied or not
     print ("Less number of images found please enter different search phrase or tag")
-  print("total downloads : %s"%(count-1))
+  print("total downloads : %s fail couunt :%s timeout :%s"%(count-1, fail_count, timeout_count))
+  return img_urls
+
+def download_img(driver, searchtext="car", start=0, count_argv=10, download_path="./download", tags = None,images = [], img_urls=[]):
+  #for the purpose of url building and for naming the directory
+  if not tags:
+    tag = ""
+    tags = ""
+  else:
+    tag = tags
+    tags = "&chips=q:%s,%s"%("+".join(searchtext.split(" ")),"+".join(tags.split(" ")))
+  #the extentions to be allowed
+  headers = {}
+  headers['User-Agent'] = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
+  #images that are downloaded will be stored here for further details
+  if not tag:
+    searchtext = "_".join(searchtext.split(" "))
+  else:
+    searchtext = "_".join(["_".join(searchtext.split(" ")) , tag.split(":")[1]])
+  #creating directory if not present
+  if not os.path.exists(download_path + "/" + searchtext.replace(" ", "_")):
+    os.makedirs(download_path + "/" + searchtext.replace(" ", "_"))
+  #downloading the images
+  count = 1
+  for img_url in img_urls:
+    try:
+      #creating a file to store the image
+      f = open(download_path+"/"+searchtext.replace(" ", "_")+"/"+searchtext.replace(" ", "_")+str(count + start)+"."+img_type, "wb")
+      #requesting the response from from the url and downloading the raw data and storing it
+      req = urllib.request.Request(img_url, headers=headers)
+      timeout = 1
+      raw_img = urllib.request.urlopen(req, timeout = 1).read()
+      print("download count : %s \nurl : %s"%(count, img_url))
+      f.write(raw_img)
+      f.close
+      count = count + 1
+    except Exception as e:
+      print ("Download failed:", e)
+      fail_count += 1
+      if(type(e)=='socket.timeout'):
+        print('************')
+        timeout_count += 1
+      os.remove(download_path+"/"+searchtext.replace(" ", "_")+"/"+searchtext.replace(" ", "_")+str(count + start)+"."+img_type)
+      #count = count - 1
+    if count_argv < count :
+      break
+  if count_argv > count:
+    #checking weather the images count specified is satisfied or not
+    print ("Less number of images found please enter different search phrase or tag")
+  print("total downloads : %s fail couunt :%s timeout :%s"%(count-1, fail_count, timeout_count))
 
 
 def mul_tags(driver,searchtext, download_path="./download", all_tags=[None], tag_list=[0], start_list=[0], count_list=[100]):
   image_links = {}
+  extensions = ["jpg", "jpeg", "png"]
   for i, tag_no in enumerate(tag_list):
-    images = fetch_links(driver, searchtext=searchtext, start=start_list[i], count_argv=count_list[i], download_path=download_path, tags = all_tags[tag_no])
-    download_img(driver, searchtext=searchtext, start=start_list[i], count_argv=count_list[i], download_path=download_path, tags = all_tags[tag_no],images = images)
-    image_links[all_tags[tag_no]] = images
+    images = fetch_links(driver, searchtext=searchtext, start=start_list[i], count_argv=count_list[i], download_path=download_path, tags = all_tags[tag_no], extensions=extensions)
+    image_links[all_tags[tag_no]] = download_img(driver, searchtext=searchtext, start=start_list[i], count_argv=count_list[i], download_path=download_path, tags = all_tags[tag_no],images = images)
+    #image_links[all_tags[tag_no]] = images
   return image_links
+
+def get_links(driver,searchtext, all_tags=[None], tag_list=[0], start_list=[0], count_list=[100]):
+  extensions = ["jpg", "jpeg", "png"]
+  image_links = {}
+  for i, tag_no in enumerate(tag_list):
+    image_links[all_tags[tag_no]] = fetch_links(driver, searchtext=searchtext, start=start_list[i], count_argv=count_list[i], tags = all_tags[tag_no], extensions=extensions)
+  return image_links
+
+def download_images_from_links(driver,searchtext, download_path="./download", all_tags=[None], tag_list=[0], start_list=[0], count_list=[100], image_urls={}):
+  for i, tag_no in enumerate(tag_list):
+    tag_urls = image_urls[all_tags[tag_no]]
+    download_img(driver, searchtext=searchtext, start=start_list[i], count_argv=count_list[i], download_path=download_path, tags = all_tags[tag_no],image_urls=tag_urls)
 
 def generate_image(searchtext, tagscount, download_path):
   '''

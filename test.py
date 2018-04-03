@@ -1,27 +1,48 @@
-import glob
 import os
 import configparser
 import image_aug.agum_rand
 import datasetgenerator
 import generate_images
 import remove_corrupt_images
+import queue
+import timeit
 
-driver = generate_images.open_browser()
-searchtext = 'car'
-randomtext = 'android'
-tagscount = 5
-all_class_tags = generate_images.get_all_tags(searchtext)[:tagscount]
-image_path =  "./images"
-tags_list = [i for i in range(tagscount)]
-start_tags_train = [0] * tagscount
-image_count_train = [10] * tagscount
-start_tags_predict = [11] * tagscount
-image_count_predict = [20] * tagscount
-generate_images.mul_tags(driver, searchtext, image_path + "/training/positive", all_class_tags, tags_list, start_tags_train, image_count_train)
-all_random_tags = generate_images.get_all_tags(randomtext)[:tagscount]
-generate_images.mul_tags(driver, randomtext, image_path + "/training/negative", all_random_tags, tags_list, start_tags_train, image_count_train)
-generate_images.mul_tags(driver, searchtext, image_path + "/testing/positive", all_class_tags, tags_list, start_tags_predict , image_count_predict)
-generate_images.close_browser(driver)
+def search(ret_queue, jobid = 'www23', searchtext='car', randomtext='random', tagscount=2, image_count_per_tag=25):
+    driver = generate_images.open_browser()
+    # searchtext = 'car'
+    # randomtext = 'android'
+    # tagscount = 5
+    # tags_list is the list selected tag numbers
+    all_class_tags = generate_images.get_all_tags(searchtext)[:int(tagscount)]
+    tags_list = [i for i in range(int(tagscount))]
+    start_tags_train = [0] * int(tagscount)
+    image_count_train = [int(image_count_per_tag)] * int(tagscount)
+    pos_image_links = generate_images.get_links(driver, searchtext, all_class_tags, tags_list, start_tags_train, image_count_train)
+    generate_images.close_browser(driver)
+    ret_queue.put({jobid: pos_image_links})
+
+
+# search(queue.Queue(), 'www23', 'car', 'random', 2, 25)
+
+'''
+train_images():
+    positive_train_image_path = './images' + '/' + jobid + '/training' + '/positive'
+    if not (os.path.exists(positive_train_image_path)):
+        os.makedirs(positive_train_image_path)
+    negative_train_image_path = './images' + '/' + jobid + '/training' + '/negative'
+    if not (os.path.exists(negative_train_image_path)):
+        os.makedirs(negative_train_image_path)
+    test_image_path = './images' + '/' + jobid + '/testing'
+    if not (os.path.exists(test_image_path)):
+        os.makedirs(test_image_path)
+    tags_list = [i for i in range(int(tagscount))]
+    start_tags_train = [0] * int(tagscount)
+    image_count_train = [int(image_count_per_tag)] * int(tagscount)
+    pos_image_links = generate_images.mul_tags(driver, searchtext, positive_train_image_path, all_class_tags, tags_list, start_tags_train, image_count_train)
+    all_random_tags = generate_images.get_all_tags(randomtext)[:int(tagscount)]
+    generate_images.mul_tags(driver, randomtext, negative_train_image_path, all_random_tags, tags_list, start_tags_train, image_count_train)
+    generate_images.close_browser(driver)
+    ret_queue.put({jobid: pos_image_links})
 
 
 for agum_count in [5]:
@@ -52,7 +73,6 @@ for agum_count in [5]:
             del(d)
 
 
-    '''
     files = glob.glob('/home/soliton/work/projects/dataset_generator/images/training/positive/*.*')
     files.sort(key=os.path.getmtime)
     files.reverse()
