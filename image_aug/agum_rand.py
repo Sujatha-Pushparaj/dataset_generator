@@ -360,11 +360,11 @@ def test_single_image_agu ():
   	cv2.imwrite('./output/%s__%s.png'%(names[x], x), image)
 
 	
-def test_mul_image_agu(dir_path, batch_size=100):
+def test_mul_image_agu(dir_path, batch_size=100, json_file_path =  "./image_aug/config_augm.json"):
   '''
   test function for multiple image agumentation
   '''
-  json_file_path = "./image_aug/config_augm.json"
+  #json_file_path = "./image_aug/config_augm.json"
   # dir_path = "./images"
   path_images = [os.path.join(dir_path, f) for f in os.listdir(dir_path)
                  if os.path.isfile(os.path.join(dir_path, f))]

@@ -52,21 +52,19 @@ class DSG(object):
 
     def __build_train_featureset(self, path, trainimage_label):
         print("loading trainingset", path)
-        for tag in os.listdir(path):
-            tag_path = os.path.join(path, tag)
-            for image in os.listdir(tag_path):
-                complete_path = os.path.join(tag_path, image)
-                des = self.__get_features_sift(complete_path)
-                print ('Complete Path========>', complete_path)
-                if des is None:
-                    continue
-                self.features_len.append(len(des))
-                self.trainimage_label.append(trainimage_label)
-                if(self.all_features.shape == (1, 0)):
-                    self.all_features = np.array(des)
-                else:
-                    self.all_features = np.concatenate((self.all_features,
-                                                        des), axis=0)
+        for image in os.listdir(path):
+            complete_path = os.path.join(path, image)
+            des = self.__get_features_sift(complete_path)
+            print ('Complete Path========>', complete_path)
+            if des is None:
+                continue
+            self.features_len.append(len(des))
+            self.trainimage_label.append(trainimage_label)
+            if(self.all_features.shape == (1, 0)):
+                self.all_features = np.array(des)
+            else:
+                self.all_features = np.concatenate((self.all_features,
+                                                    des), axis=0)
 
     def __cleartraining(self):
         self.all_features = np.array([[]])
@@ -205,15 +203,15 @@ class DSG(object):
         model['classfier'] = self.classifier
         model['centroids'] = self.centroids
         model['cluster_labels'] = self.cluster_labels
-        file_name = 'carmodel_' + str(self.number_of_clusters) + '_' + str(self.contrast_threshold) + '.file'
-        with open(self.model_path + '/' + file_name, 'wb') as f:
+        # file_name = 'carmodel_' + str(self.number_of_clusters) + '_' + str(self.contrast_threshold) + '.file'
+        with open(self.model_path, 'wb') as f:
             pickle.dump(model, f)
 
     def __load_model(self):
-        file_name = 'carmodel_' + str(self.number_of_clusters) + '_' + str(self.contrast_threshold) + '.file'
-        with open(self.model_path + '/' + file_name, 'rb') as f:
+        # file_name = 'carmodel_' + str(self.number_of_clusters) + '_' + str(self.contrast_threshold) + '.file'
+        with open(self.model_path, 'rb') as f:
             model = pickle.load(f)
-        #self.sift = cv2.xfeatures2d.SIFT_create(contrastThreshold=0.1)
+        # self.sift = cv2.xfeatures2d.SIFT_create(contrastThreshold=0.1)
         self.classifier = model['classfier']
         self.centroids = model['centroids']
         self.cluster_labels = model['cluster_labels']

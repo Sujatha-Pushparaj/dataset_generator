@@ -2,16 +2,13 @@ import os
 import magic
 
 
-def remove_corrupt(folder):
-    # folder = '/home/soliton/work/projects/Images/downloads/car'
+def remove(folder=''):
+    # folder = '/home/soliton/work/projects/dataset_generator/data/neg_train_images/downloads/random'
     for filename in os.listdir(folder):
         infilename = os.path.join(folder, filename)
         m = magic.from_file(infilename, True).split('/')
-        if(m[0] != 'image' or m[1] not in ['jpg', 'jpeg', 'html', 'htm', 'php']):
+        if(m[0] != 'image' or m[-1] not in ['jpg', 'jpeg', 'png']):
             os.remove(infilename)
             print("removed %s"%infilename)
             continue
-        filename_ext = filename.split('.')
-        if(filename_ext[1] not in ['jpg', 'jpeg']):
-            os.rename(infilename, os.path.join(folder, filename_ext[0] + '.jpeg'))
-            print("renamed %s"%infilename)
+#remove_corrupt()

@@ -9,6 +9,20 @@ import urllib
 os.environ["PATH"] += os.pathsep + os.getcwd()  #for  geckodrive
 all_tags =[]
 
+def open_browser():
+  ''' 
+  Process : to initate the browser and to open
+  '''
+  driver = webdriver.Firefox()
+  return driver
+
+
+def close_browser(driver):
+  '''
+  Process : to close the browser
+  '''
+  driver.quit()
+
 def find_tags(s):
   '''
   Process : to find all tags and store it in a list
@@ -42,20 +56,6 @@ def get_all_tags(searchtext = "car"):
   except Exception as e:
     print(str(e))
   return tags
-
-def open_browser():
-  '''
-  Process : to initate the browser and to open
-  '''
-  driver = webdriver.Firefox()
-  return driver
-
-
-def close_browser(driver):
-  '''
-  Process : to close the browser
-  '''
-  driver.quit()
 
 
 def fetch_links(driver, searchtext="car", start=0, count_argv=10, tags = None, extensions=[]):
@@ -100,74 +100,41 @@ def fetch_links(driver, searchtext="car", start=0, count_argv=10, tags = None, e
     img_type = json.loads(i.get_attribute('innerHTML'))["ity"]
     if(img_type in extensions):
       # appends the url of the image
-      valid_images.append(json.loads(i.get_attribute('innerHTML'))["ou"])
+      valid_images.append((json.loads(i.get_attribute('innerHTML'))["ou"],img_type))
   valid_images = valid_images[start:start+count_argv]
   print ("Total images:", len(valid_images), "\n")
   return valid_images
 
 
-def download_img1(driver, searchtext="car", start=0, count_argv=10, download_path="./download", tags = None,images = []):
+def download_img(driver, download_path, images_det):
   #for the purpose of url building and for naming the directory
-  fail_count = 0
-  timeout_count = 0
-  if not tags:
-    tag = ""
-    tags = ""
-  else:
-    tag = tags
-    tags = "&chips=q:%s,%s"%("+".join(searchtext.split(" ")),"+".join(tags.split(" ")))
-  #the extentions to be allowed
-  extensions = ["jpg", "jpeg", "png"]
   headers = {}
   headers['User-Agent'] = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
-  #images that are downloaded will be stored here for further details
-  img_urls = []
-  dict_img = {}
-  if not tag:
-    searchtext = "_".join(searchtext.split(" "))
-  else:
-    searchtext = "_".join(["_".join(searchtext.split(" ")) , tag.split(":")[1]])
-  #creating directory if not present
-  if not os.path.exists(download_path + "/" + searchtext.replace(" ", "_")):
-    os.makedirs(download_path + "/" + searchtext.replace(" ", "_"))
+  #creating the folder for tags if not exist
+  if not (os.path.exists(download_path)):
+        os.makedirs(download_path)
   #downloading the images
-  count = 1
-  for x, img in enumerate(images):
+  for x, img in enumerate(images_det):
     #reading the image url and its type
-    img_url = json.loads(img.get_attribute('innerHTML'))["ou"]
-    img_type = json.loads(img.get_attribute('innerHTML'))["ity"]
+    print('************',download_path)
+    img_url = img['url']
+    img_id = img['ID']
+    img_type = img['type']
     try:
-      #checking for the extentions whether to download this image or not
-      if img_type in extensions:
-        #creating a file to store the image
-        f = open(download_path+"/"+searchtext.replace(" ", "_")+"/"+searchtext.replace(" ", "_")+str(count + start)+"."+img_type, "wb")
-        #requesting the response from from the url and downloading the raw data and storing it
-        req = urllib.request.Request(img_url, headers=headers)
-        timeout = 1
-        raw_img = urllib.request.urlopen(req, timeout = 1).read()
-        print("download count : %s \nurl : %s"%(count, img_url))
-        f.write(raw_img)
-        f.close
-        dict_img["%s"%count] = {"ou":img_url, "ity":img_type}
-        img_urls.append(img_url)
-        count = count + 1
+      #creating a file to store the image
+      f = open(download_path + '/' + img_id + '.' + img_type, "wb")
+      #requesting the response from from the url and downloading the raw data and storing it
+      req = urllib.request.Request(img_url, headers=headers)
+      timeout = 1
+      raw_img = urllib.request.urlopen(req, timeout = 1).read()
+      print("download count : %s \nurl : %s"%(img_id, img_url))
+      f.write(raw_img)
+      f.close
     except Exception as e:
       print ("Download failed:", e)
-      fail_count += 1
-      if(type(e)=='socket.timeout'):
-        print('************')
-        timeout_count += 1
-      os.remove(download_path+"/"+searchtext.replace(" ", "_")+"/"+searchtext.replace(" ", "_")+str(count + start)+"."+img_type)
-      #count = count - 1
-    if count_argv < count :
-      break
-  if count_argv > count:
-    #checking weather the images count specified is satisfied or not
-    print ("Less number of images found please enter different search phrase or tag")
-  print("total downloads : %s fail couunt :%s timeout :%s"%(count-1, fail_count, timeout_count))
-  return img_urls
+      os.remove(download_path + '/' + img_id + '.' + img_type)
 
-def download_img(driver, searchtext="car", start=0, count_argv=10, download_path="./download", tags = None,images = [], img_urls=[]):
+def download_img1(driver, searchtext="car", start=0, count_argv=10, download_path="./download", tags = None,images = [], img_urls=[]):
   #for the purpose of url building and for naming the directory
   if not tags:
     tag = ""
@@ -225,22 +192,38 @@ def mul_tags(driver,searchtext, download_path="./download", all_tags=[None], tag
     #image_links[all_tags[tag_no]] = images
   return image_links
 
-def get_links(driver,searchtext, all_tags=[None], tag_list=[0], start_list=[0], count_list=[100]):
+def get_links(driver,searchtext, all_tags=[None], tag_list=[0], start_list=[0], count_list=[100], last_img_id=0):
   extensions = ["jpg", "jpeg", "png"]
-  image_links = {}
+  images_det = []
   for i, tag_no in enumerate(tag_list):
-    image_links[all_tags[tag_no]] = fetch_links(driver, searchtext=searchtext, start=start_list[i], count_argv=count_list[i], tags = all_tags[tag_no], extensions=extensions)
-  return image_links
+    image_links_types = fetch_links(driver, searchtext=searchtext, start=start_list[i], count_argv=count_list[i], tags = all_tags[tag_no], extensions=extensions)
+    for a_image in image_links_types:
+      last_img_id += 1
+      image_det = {"ID": str(last_img_id) ,"tag": all_tags[tag_no],"url":a_image[0], "type":a_image[1]}
+      images_det.append(image_det)
+  return images_det, str(last_img_id)
 
-def download_images_from_links(driver,searchtext, download_path="./download", all_tags=[None], tag_list=[0], start_list=[0], count_list=[100], image_urls={}):
-  for i, tag_no in enumerate(tag_list):
-    tag_urls = image_urls[all_tags[tag_no]]
-    download_img(driver, searchtext=searchtext, start=start_list[i], count_argv=count_list[i], download_path=download_path, tags = all_tags[tag_no],image_urls=tag_urls)
+def download_images_for_prediction(driver,searchtext, download_path="./download", all_tags=[None], tag_list=[0], start_list=[0], count_list=[100], last_img_id=0):
+  extensions = ["jpg", "jpeg", "png"]
+  for i, tag in enumerate(all_tags):
+    if tag is None:
+      tag = "None"
+    images_det=[]
+    tag_path = os.path.join(download_path, tag)
+    image_links_types = fetch_links(driver, searchtext=searchtext, start=start_list[i], count_argv=count_list[i], tags = tag, extensions=extensions)
+    for a_image in image_links_types:
+      last_img_id += 1
+      image_det = {"ID": str(last_img_id) ,"tag": tag,"url":a_image[0], "type":a_image[1]}
+      images_det.append(image_det)
+    download_img(driver, tag_path, images_det)
+    remove_corrupt_images.remove()
+  return str(last_img_id)
 
+'''
 def generate_image(searchtext, tagscount, download_path):
-  '''
+  
   enable the below to execuite this functions
-  '''
+
   searchtext = "computer"
   all_tags = get_all_tags(searchtext = searchtext)[:tagscount]
   driver = open_browser()
@@ -253,4 +236,4 @@ def generate_image(searchtext, tagscount, download_path):
   close_browser(driver)
 
 #generate_image('car', 5, "./images/training/positive")
-#generate_image('headset', 5, "images/training/negative")
+#generate_image('headset', 5, "images/training/negative") '''
